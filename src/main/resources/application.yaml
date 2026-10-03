@@ -1,3 +1,37 @@
 spring:
   application:
     name: ex1-hello-jpa
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration
+      - org.springframework.boot.data.jpa.autoconfigure.DataJpaRepositoriesAutoConfiguration
+
+  # 1. H2 파일 기반 데이터베이스 설정
+  datasource:
+    # 프로젝트 루트에 db_dev.mv.db 파일로 저장되는 설정입니다.
+    url: jdbc:h2:./db_dev;MODE=MySQL;AUTO_SERVER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  # 2. H2 콘솔 활성화 (브라우저에서 DB 확인용)
+  h2:
+    console:
+      enabled: true
+
+  # 3. JPA/Hibernate 로그 설정 (기본)
+  jpa:
+    hibernate:
+      ddl-auto: update # 개발 환경용 (필요에 따라 create, update 등 설정)
+    properties:
+      hibernate:
+        show_sql: true         # 콘솔에 SQL 출력
+        format_sql: true       # SQL을 보기 좋게 포맷팅
+        use_sql_comments: true # SQL에 주석(어떤 실행문인지) 포함
+
+# 4. JPA 쿼리 파라미터 값 바인딩 로그 설정 (상세)
+logging:
+  level:
+    org.hibernate.SQL: debug       # Hibernate 실행 SQL 로깅
+    org.hibernate.orm.jdbc.bind: trace # SQL에 바인딩되는 파라미터 값 출력 (Spring Boot 3.x 기준)

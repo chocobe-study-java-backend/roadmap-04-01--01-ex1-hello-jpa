@@ -26,6 +26,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // Hibernate의 어노테이션 색인 라이브러리
+    // => 이게 있어야 persistence.xml에 Entity를 직접 명시하지 않아도 자동으로 인식한다.
+    runtimeOnly("org.hibernate.orm:hibernate-scan-jandex:7.4.5.Final")
 }
 
 tasks.withType<Test> {
