@@ -37,7 +37,11 @@ public class Member {
         return team;
     }
 
-    public void setTeam(Team team) {
+    public void changeTeam(Team team) {
         this.team = team;
+
+        // Team의 연관관계(mappedBy) 필드에도 쌍으로 반영해주기
+        // => 순수 객체 상태를 고려해서 항상 양쪽에 값을 설정하는 권장 방법
+        team.getMembers().add(this);
     }
 }

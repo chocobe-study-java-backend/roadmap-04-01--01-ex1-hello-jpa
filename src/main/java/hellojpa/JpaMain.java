@@ -23,18 +23,23 @@ public class JpaMain {
 
             Member member = new Member();
             member.setUsername("member1");
-            member.setTeam(team);
+            member.changeTeam(team);
             em.persist(member);
 
-            em.flush();
-            em.clear();
+            // team.getMembers().add(member);
 
-            Member findMember = em.find(Member.class, member.getId());
-            List<Member> members = findMember.getTeam().getMembers();
+            // em.flush();
+            // em.clear();
 
+            // 1차 캐시에서 조회함 => 위에서 생성한 member가 추가되지 않은 상태임
+            Team findTeam = em.find(Team.class, team.getId());
+            List<Member> members = findTeam.getMembers();
+
+            System.out.println("================");
             for (Member m : members) {
-                System.out.println("m = " + m.getUsername());
+                System.out.println("m.getUsername() = " + m.getUsername());
             }
+            System.out.println("================");
 
             tx.commit();
         } catch (Exception e) {
