@@ -23,7 +23,7 @@ spring:
   # 3. JPA/Hibernate 로그 설정 (기본)
   jpa:
     hibernate:
-      ddl-auto: update # 개발 환경용 (필요에 따라 create, update 등 설정)
+      ddl-auto: create # 개발 환경용 (필요에 따라 create, update 등 설정)
     properties:
       hibernate:
         show_sql: true         # 콘솔에 SQL 출력
