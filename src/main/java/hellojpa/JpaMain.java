@@ -17,34 +17,19 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Team team = new Team();
-            team.setName("TeamA");
-            em.persist(team);
+            Movie movie = new Movie();
+            movie.setDirector("aaa");
+            movie.setActor("bbb");
+            movie.setName("바람과 함께 사라지다.");
+            movie.setPrice(10_000);
 
-            Locker locker = new Locker();
-            locker.setName("locker1");
-            em.persist(locker);
+            em.persist(movie);
 
-            Member member = new Member();
-            member.setUsername("member1");
-            member.changeTeam(team);
-            member.setLocker(locker);
-            em.persist(member);
+            em.flush();
+            em.clear();
 
-            // team.getMembers().add(member);
-
-            // em.flush();
-            // em.clear();
-
-            // 1차 캐시에서 조회함 => 위에서 생성한 member가 추가되지 않은 상태임
-            Team findTeam = em.find(Team.class, team.getId());
-            List<Member> members = findTeam.getMembers();
-
-            System.out.println("================");
-            for (Member m : members) {
-                System.out.println("m.getUsername() = " + m.getUsername());
-            }
-            System.out.println("================");
+            Movie findMovie = em.find(Movie.class, movie.getId());
+            System.out.println("findMovie = " + findMovie);
 
             tx.commit();
         } catch (Exception e) {
@@ -52,9 +37,6 @@ public class JpaMain {
         } finally {
             em.close();
         }
-
-        // tx.commit();
-        // em.close();
 
         emf.close();
     }
