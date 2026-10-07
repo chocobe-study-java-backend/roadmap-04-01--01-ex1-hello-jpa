@@ -2,10 +2,6 @@ package hellojpa;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 public class Member extends BaseEntity {
 
@@ -20,13 +16,6 @@ public class Member extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "TEAM_ID")
     private Team team;
-
-    @OneToOne
-    @JoinColumn(name = "LOCKER_ID")
-    private Locker locker;
-
-    @OneToMany(mappedBy = "member")
-    private List<MemberProduct> memberProducts = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -54,13 +43,5 @@ public class Member extends BaseEntity {
         // Team의 연관관계(mappedBy) 필드에도 쌍으로 반영해주기
         // => 순수 객체 상태를 고려해서 항상 양쪽에 값을 설정하는 권장 방법
         team.getMembers().add(this);
-    }
-
-    public Locker getLocker() {
-        return locker;
-    }
-
-    public void setLocker(Locker locker) {
-        this.locker = locker;
     }
 }
