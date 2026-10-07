@@ -1,12 +1,10 @@
 package hellojpa;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
 import org.hibernate.Hibernate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class JpaMain {
 
@@ -18,43 +16,52 @@ public class JpaMain {
         tx.begin();
 
         try {
+            Team team1 = new Team();
+            team1.setName("teamA");
+            em.persist(team1);
+
+            Team team2 = new Team();
+            team2.setName("teamB");
+            em.persist(team2);
+
             Member member1 = new Member();
             member1.setUsername("member1");
+            member1.changeTeam(team1);
             em.persist(member1);
+
+            Member member2 = new Member();
+            member2.setUsername("member2");
+            member2.changeTeam(team2);
+            em.persist(member2);
 
             em.flush();
             em.clear();
 
-            Member refMember = em.getReference(Member.class, member1.getId());
-            System.out.println("refMember = " + refMember.getClass());
+            // Member findMember = em.find(Member.class, member.getId());
+            // System.out.println("m = " + findMember.getTeam().getClass());
+            //
+            // System.out.println("===============");
+            // findMember.getTeam().getName();
+            // System.out.println("===============");
 
-            System.out.println("isLoaded = " + emf.getPersistenceUnitUtil().isLoaded(refMember));
-            Hibernate.initialize(refMember);
-            System.out.println("isLoaded = " + emf.getPersistenceUnitUtil().isLoaded(refMember));
+            /* NOTE:
+            SQL: SELECT * FROM Member;
+
+            Member#team의 FetchType을 EAGER로 설정했으므로, Team 조회 SQL도 추가 실행한다.
+            SQL: SELECT * FROM Team WHERE TEAM_ID = ?;
+             */
+            List<Member> members = em.createQuery("""
+                            select m from Member m
+                            """, Member.class)
+                    .getResultList();
 
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
-            e.printStackTrace();
         } finally {
             em.close();
         }
 
         emf.close();
-    }
-
-    public static void printMemberAndTeam(Member member) {
-        String username = member.getUsername();
-
-        Team team = member.getTeam();
-        String teamName = team.getName();
-
-        System.out.println("username = " + username);
-        System.out.println("teamName = " + teamName);
-    }
-
-    private static void printMember(Member member) {
-        String username = member.getUsername();
-        System.out.println("username = " + username);
     }
 }
