@@ -16,44 +16,27 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Team team1 = new Team();
-            team1.setName("teamA");
-            em.persist(team1);
+            Child child1 = new Child();
+            child1.setName("child1");
 
-            Team team2 = new Team();
-            team2.setName("teamB");
-            em.persist(team2);
+            Child child2 = new Child();
+            child1.setName("child2");
 
-            Member member1 = new Member();
-            member1.setUsername("member1");
-            member1.changeTeam(team1);
-            em.persist(member1);
+            Parent parent = new Parent();
+            parent.setName("parentA");
+            parent.addChild(child1);
+            parent.addChild(child2);
 
-            Member member2 = new Member();
-            member2.setUsername("member2");
-            member2.changeTeam(team2);
-            em.persist(member2);
+            // em.persist(child1);
+            // em.persist(child2);
+            em.persist(parent);
 
             em.flush();
             em.clear();
 
-            // Member findMember = em.find(Member.class, member.getId());
-            // System.out.println("m = " + findMember.getTeam().getClass());
-            //
-            // System.out.println("===============");
-            // findMember.getTeam().getName();
-            // System.out.println("===============");
-
-            /* NOTE:
-            SQL: SELECT * FROM Member;
-
-            Member#team의 FetchType을 EAGER로 설정했으므로, Team 조회 SQL도 추가 실행한다.
-            SQL: SELECT * FROM Team WHERE TEAM_ID = ?;
-             */
-            List<Member> members = em.createQuery("""
-                            select m from Member m
-                            """, Member.class)
-                    .getResultList();
+            Parent findParent = em.find(Parent.class, parent.getId());
+            System.out.println("findParent.getName() = " + findParent.getName());
+            System.out.println("findParent.getChildList().size() = " + findParent.getChildList().size());
 
             tx.commit();
         } catch (Exception e) {
