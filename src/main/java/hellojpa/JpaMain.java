@@ -20,23 +20,19 @@ public class JpaMain {
             child1.setName("child1");
 
             Child child2 = new Child();
-            child1.setName("child2");
+            child2.setName("child2");
 
             Parent parent = new Parent();
             parent.setName("parentA");
             parent.addChild(child1);
             parent.addChild(child2);
-
-            // em.persist(child1);
-            // em.persist(child2);
             em.persist(parent);
 
             em.flush();
             em.clear();
 
             Parent findParent = em.find(Parent.class, parent.getId());
-            System.out.println("findParent.getName() = " + findParent.getName());
-            System.out.println("findParent.getChildList().size() = " + findParent.getChildList().size());
+            findParent.getChildList().remove(0);
 
             tx.commit();
         } catch (Exception e) {
