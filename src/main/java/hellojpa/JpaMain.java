@@ -1,10 +1,8 @@
 package hellojpa;
 
 import jakarta.persistence.*;
-import org.hibernate.Hibernate;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class JpaMain {
 
@@ -16,23 +14,21 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Child child1 = new Child();
-            child1.setName("child1");
+            Member member = new Member();
+            member.setUsername("hello");
+            member.setHomeAddress(new Address(
+                    "서울",
+                    "강남대로",
+                    "12345"));
+            member.setWorkAddress(new Address(
+                    "부산",
+                    "사리로",
+                    "33321"));
+            member.setWorkPeriod(new Period(
+                    LocalDateTime.now().minusYears(3),
+                    LocalDateTime.now()));
 
-            Child child2 = new Child();
-            child2.setName("child2");
-
-            Parent parent = new Parent();
-            parent.setName("parentA");
-            parent.addChild(child1);
-            parent.addChild(child2);
-            em.persist(parent);
-
-            em.flush();
-            em.clear();
-
-            Parent findParent = em.find(Parent.class, parent.getId());
-            findParent.getChildList().remove(0);
+            em.persist(member);
 
             tx.commit();
         } catch (Exception e) {

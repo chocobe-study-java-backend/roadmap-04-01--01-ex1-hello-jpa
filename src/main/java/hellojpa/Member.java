@@ -3,7 +3,7 @@ package hellojpa;
 import jakarta.persistence.*;
 
 @Entity
-public class Member extends BaseEntity {
+public class Member {
 
     @Id
     @GeneratedValue
@@ -13,10 +13,28 @@ public class Member extends BaseEntity {
     @Column(name = "USERNAME")
     private String username;
 
-    // @ManyToOne(fetch = FetchType.EAGER)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TEAM_ID")
-    private Team team;
+    // Period
+    @Embedded
+    private Period workPeriod;
+
+    // Address
+    @Embedded
+    private Address homeAddress;
+
+    // Address
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(
+                    name = "city",
+                    column = @Column(name = "EMP_CITY")),
+            @AttributeOverride(
+                    name = "street",
+                    column = @Column(name = "EMP_STREET")),
+            @AttributeOverride(
+                    name = "zipcode",
+                    column = @Column(name = "EMP_ZIPCODE"))
+    })
+    private Address workAddress;
 
     public Long getId() {
         return id;
@@ -34,15 +52,27 @@ public class Member extends BaseEntity {
         this.username = username;
     }
 
-    public Team getTeam() {
-        return team;
+    public Period getWorkPeriod() {
+        return workPeriod;
     }
 
-    public void changeTeam(Team team) {
-        this.team = team;
+    public void setWorkPeriod(Period workPeriod) {
+        this.workPeriod = workPeriod;
+    }
 
-        // Team의 연관관계(mappedBy) 필드에도 쌍으로 반영해주기
-        // => 순수 객체 상태를 고려해서 항상 양쪽에 값을 설정하는 권장 방법
-        team.getMembers().add(this);
+    public Address getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setHomeAddress(Address homeAddress) {
+        this.homeAddress = homeAddress;
+    }
+
+    public Address getWorkAddress() {
+        return workAddress;
+    }
+
+    public void setWorkAddress(Address workAddress) {
+        this.workAddress = workAddress;
     }
 }
