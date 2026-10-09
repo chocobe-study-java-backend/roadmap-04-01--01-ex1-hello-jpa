@@ -2,7 +2,7 @@ package hellojpa;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 public class JpaMain {
 
@@ -14,23 +14,37 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Address address1 = new Address("서울", "강남대로", "12345");
+            Member member = new Member();
+            member.setUsername("member1");
+            member.setHomeAddress(new Address("서울", "강남대로", "12333"));
 
-            Member member1 = new Member();
-            member1.setUsername("member1");
-            member1.setHomeAddress(address1);
-            em.persist(member1);
+            member.getFavoriteFoods().add("치킨");
+            member.getFavoriteFoods().add("족발");
+            member.getFavoriteFoods().add("피자");
 
-            member1.setHomeAddress(new Address("판교", address1.getStreet(), address1.getZipcode()));
+            member.getAddressHistory().add(new AddressEntity("old1", "street1", "zc-1"));
+            member.getAddressHistory().add(new AddressEntity("old2", "street2", "zc-2"));
 
-            Address address2 = new Address(address1.getCity(), address1.getStreet(), address1.getZipcode());
+            em.persist(member);
 
-            Member member2 = new Member();
-            member2.setUsername("member2");
-            member2.setHomeAddress(address2);
-            em.persist(member2);
+            em.flush();
+            em.clear();
 
-            // member1.getHomeAddress().setCity("부산");
+            System.out.println("================ START ================");
+            Member findMember = em.find(Member.class, member.getId());
+
+            // 1. 임베디드 타입 수정하기
+            // findMember.setHomeAddress(new Address("부산", "사리로", "11111"));
+
+            // 2. String 값 타입 컬렉션 수정하기
+            // // "치킨" => "한식" 변경하기
+            // findMember.getFavoriteFoods().remove("치킨");
+            // findMember.getFavoriteFoods().add("한식");
+
+            // 3. @Embedded 값 타입 컬렉션 수정하기
+            // // "old1" => "new1" 변경하기
+            // findMember.getAddressHistory().remove(new Address("old1", "street1", "zc-1"));
+            // findMember.getAddressHistory().add(new Address("new1", "street1", "zc-1"));
 
             tx.commit();
         } catch (Exception e) {
